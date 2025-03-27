@@ -19,7 +19,7 @@ defined('ABSPATH') || exit;
 
 // Define plugin constants
 if (!defined('IX_WPB_VERSION')) {
-    define('IX_WPB_VERSION', '1.2.5');
+    define('IX_WPB_VERSION', '1.2.6');
 }
 
 if (!defined('IX_WPB_PLUGIN_DIR')) {
@@ -124,32 +124,35 @@ function ix_wpb_init_plugin() {
 }
 add_action('plugins_loaded', 'ix_wpb_init_plugin');
 
-add_action('wp_ajax_ix_wpb_search_products', 'ix_wpb_search_products_callback');
-function ix_wpb_search_products_callback() {
-    check_ajax_referer('ix-wpb-search-products', 'security');
+add_action('wp_ajax_ix_wpb_search_products', 'handle_product_search');
+function handle_product_search() {
+    check_ajax_referer('ix_wpb_admin_nonce', 'security');
 
-    if (!class_exists('WooCommerce')) {
-        wp_send_json_error(__('WooCommerce is not active', 'ix-woo-pro-banner'));
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(__('Permission denied', 'ix-woo-pro-banner'));
     }
 
-    $search_term = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
+    $search = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
+    $exclude = isset($_GET['exclude']) ? array_map('absint', (array)$_GET['exclude']) : [];
     $products = [];
 
-    if (!empty($search_term)) {
+    if (!empty($search)) {
         $args = [
-            'post_type' => 'product',
-            'posts_per_page' => 20,
-            's' => $search_term
+            's' => $search,
+            'limit' => 20,
+            'exclude' => $exclude,
+            'status' => 'publish'
         ];
-        $posts = get_posts($args);
 
-        foreach ($posts as $post) {
+        $product_objects = wc_get_products($args);
+
+        foreach ($product_objects as $product) {
             $products[] = [
-                'id' => $post->ID,
-                'text' => $post->post_title
+                'id' => $product->get_id(),
+                'text' => $product->get_name() . ' (#' . $product->get_id() . ')'
             ];
         }
     }
 
-    wp_send_json($products);
+    wp_send_json_success($products);
 }
