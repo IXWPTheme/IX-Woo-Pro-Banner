@@ -31,6 +31,9 @@ class IX_WPB_Main {
         require_once IX_WPB_PLUGIN_DIR . 'includes/class-product-grid-short-code.php';
         require_once IX_WPB_PLUGIN_DIR . 'includes/class-shop-pro-grid-short-code.php';
         require_once IX_WPB_PLUGIN_DIR . 'includes/class-debug.php';
+		require_once IX_WPB_PLUGIN_DIR . 'includes/class-frontend-controls.php';
+		require_once IX_WPB_PLUGIN_DIR . 'includes/class-grid-editor.php';			
+    	require_once IX_WPB_PLUGIN_DIR . 'includes/class-ajax-handler.php'; // Load AJAX handler    
     }
     
     private function init_components() {
@@ -40,6 +43,9 @@ class IX_WPB_Main {
         IX_WPB_PDF_Generator::instance();
         IX_WPB_Product_Grid::instance();
         IX_WPB_Shop_Pro_Grid::instance();
+		IX_WPB_Frontend_Controls::init();
+		IX_WPB_Grid_Editor::init();
+		IX_WPB_Ajax_Handler::instance();  // Load AJAX handler
     }
     
     private function set_locale() {
