@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
             url: ix_wpb_manager_form.ajax_url,
             type: 'POST',
             data: {
-                action: 'wpb_manager_save_settings',
+                action: 'ix_wpb_save_manager_settings',
                 nonce: ix_wpb_manager_form.nonce,
                 image_source: $form.find('#ix-wpb-image-source').val(),
                 image_size: $form.find('#ix-wpb-image-size').val(),
