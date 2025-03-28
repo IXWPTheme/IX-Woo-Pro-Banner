@@ -32,37 +32,40 @@ class IX_WPB_Admin_Settings {
         return;
     }
 
-    // Enqueue Select2 from CDN (or use WordPress bundled version)
+    // Load Select2
     wp_enqueue_script(
-        'select2',
-        'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js',
+        'ix-select2',
+        'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
         ['jquery'],
-        '4.0.13',
+        '4.1.0-rc.0',
         true
     );
     
     wp_enqueue_style(
-        'select2',
-        'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css',
+        'ix-select2',
+        'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
         [],
-        '4.0.13'
+        '4.1.0-rc.0'
     );
 
-    // Enqueue your admin script
+    // Your admin script
     wp_enqueue_script(
         'ix-wpb-admin',
         IX_WPB_PLUGIN_URL . 'assets/js/admin.js',
-        ['jquery', 'select2'],
+        ['jquery', 'ix-select2'],
         IX_WPB_VERSION,
         true
     );
 
-    // Localize script data
+    // Localization data
     wp_localize_script('ix-wpb-admin', 'ix_wpb_admin', [
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'search_nonce' => wp_create_nonce('ix-wpb-search-products'),
-        'selected_products' => $this->get_selected_products_data(),
-        'placeholder_text' => __('Search for products...', 'ix-woo-pro-banner')
+        'ajaxurl' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('ix_wpb_search_products'),
+        'i18n' => [
+            'search_placeholder' => __('Search for products...', 'ix-woo-pro-banner'),
+            'no_results' => __('No products found', 'ix-woo-pro-banner'),
+            'loading' => __('Loading...', 'ix-woo-pro-banner')
+        ]
     ]);
 }
 
@@ -238,15 +241,40 @@ private function get_selected_products_data() {
     }
     
     public function render_products_field() {
-        ?>
-        <select id="ix_wpb_selected_products" 
-                name="ix_wpb_shop_pro_grid_settings[selected_products][]" 
-                multiple="multiple" 
-                style="width: 50%;"
-                data-placeholder="<?php esc_attr_e('Search for products...', 'ix-woo-pro-banner'); ?>">
-        </select>
-        <?php
+    $options = get_option('ix_wpb_shop_pro_grid_settings', []);
+    $selected_ids = $options['selected_products'] ?? [];
+    $selected_products = [];
+
+    if (!empty($selected_ids)) {
+        $products = get_posts([
+            'post_type' => 'product',
+            'post__in' => $selected_ids,
+            'posts_per_page' => -1
+        ]);
+
+        foreach ($products as $product) {
+            $selected_products[] = [
+                'id' => $product->ID,
+                'text' => $product->post_title
+            ];
+        }
     }
+    ?>
+    <select id="ix_wpb_selected_products" 
+            name="ix_wpb_shop_pro_grid_settings[selected_products][]" 
+            multiple="multiple"
+            class="ix-select2-container"
+            style="width: 50%;"
+            data-placeholder="<?php echo esc_attr__('Search for products...', 'ix-woo-pro-banner'); ?>">
+        <?php foreach ($selected_products as $product) : ?>
+            <option value="<?php echo esc_attr($product['id']); ?>" selected>
+                <?php echo esc_html($product['text']); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <p class="description"><?php esc_html_e('Select products to feature in promotional grids.', 'ix-woo-pro-banner'); ?></p>
+    <?php
+}
     
     public function render_columns_field($args) {
         $options = get_option('ix_wpb_shop_pro_grid_settings', []);
