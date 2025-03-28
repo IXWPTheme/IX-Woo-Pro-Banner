@@ -26,7 +26,11 @@ class IX_WPB_Ajax_Handler {
     public function search_products() {
         check_ajax_referer('ix_wpb_search_products', 'nonce');
 
-        $search = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : '';
+        if (!current_user_can('edit_products')) {
+        wp_send_json_error(__('Unauthorized access', 'ix-woo-pro-banner'), 403);
+    }
+		
+		$search = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : '';
         $results = [];
 
         if (!empty($search)) {
