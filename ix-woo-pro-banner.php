@@ -19,7 +19,7 @@ defined('ABSPATH') || exit;
 
 // Define plugin constants
 if (!defined('IX_WPB_VERSION')) {
-    define('IX_WPB_VERSION', '1.2.6');
+    define('IX_WPB_VERSION', '1.2.8.21');
 }
 
 if (!defined('IX_WPB_PLUGIN_DIR')) {
@@ -123,36 +123,3 @@ function ix_wpb_init_plugin() {
     IX_WPB_Main::instance();
 }
 add_action('plugins_loaded', 'ix_wpb_init_plugin');
-
-add_action('wp_ajax_ix_wpb_search_products', 'handle_product_search');
-function handle_product_search() {
-    check_ajax_referer('ix_wpb_admin_nonce', 'security');
-
-    if (!current_user_can('manage_options')) {
-        wp_send_json_error(__('Permission denied', 'ix-woo-pro-banner'));
-    }
-
-    $search = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
-    $exclude = isset($_GET['exclude']) ? array_map('absint', (array)$_GET['exclude']) : [];
-    $products = [];
-
-    if (!empty($search)) {
-        $args = [
-            's' => $search,
-            'limit' => 20,
-            'exclude' => $exclude,
-            'status' => 'publish'
-        ];
-
-        $product_objects = wc_get_products($args);
-
-        foreach ($product_objects as $product) {
-            $products[] = [
-                'id' => $product->get_id(),
-                'text' => $product->get_name() . ' (#' . $product->get_id() . ')'
-            ];
-        }
-    }
-
-    wp_send_json_success($products);
-}
