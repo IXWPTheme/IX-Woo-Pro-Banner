@@ -1,36 +1,68 @@
-jQuery(document).ready(function($) {
-    if ($('#ix_wpb_selected_products').length) {
-        $('#ix_wpb_selected_products').select2({
+/*IX Woo Pro Banner Settings Promotional Products*/
+(function($) {
+    'use strict';
+
+    $(document).ready(function() {
+        const $productSelect = $('#ix_wpb_selected_products');
+        
+        $productSelect.select2({			
             ajax: {
-                url: ix_wpb_admin.ajax_url,
+                url: ix_wpb_admin.ajaxurl,
                 dataType: 'json',
                 delay: 250,
                 data: function(params) {
                     return {
-                        term: params.term,
+                        q: params.term,
                         action: 'ix_wpb_search_products',
-                        security: ix_wpb_admin.search_nonce
+                        nonce: ix_wpb_admin.nonce
                     };
                 },
                 processResults: function(data) {
+                    if (!data.success) {
+                        console.error('AJAX error:', data.data);
+                        return { results: [] };
+                    }
+                    
                     return {
-                        results: data
+                        results: data.data.map(function(product) {
+                            return {
+                                id: product.id,
+                                text: product.text,
+                                display: product.display
+                            };
+                        })
                     };
                 },
                 cache: true
             },
-            minimumInputLength: 2,
-            placeholder: ix_wpb_admin.placeholder_text,
-            width: '50%',
-            allowClear: true
-        });
-
-        // Pre-populate selected products
-        if (ix_wpb_admin.selected_products && ix_wpb_admin.selected_products.length) {
-            var data = {
-                results: ix_wpb_admin.selected_products
-            };
-            $('#ix_wpb_selected_products').select2('data', data.results);
-        }
-    }
+            placeholder: ix_wpb_admin.i18n.search_placeholder,
+            minimumInputLength: 2,			
+            escapeMarkup: function(markup) {
+                return markup;
+            },
+            templateResult: function(product) {
+                if (product.loading) {
+                    return ix_wpb_admin.i18n.loading;
+                }
+                var $container = $('<div class="ix-wpb-product-result"></div>');
+                $container.html(product.display || product.text);
+                return $container;
+            },
+            templateSelection: function(product) {
+                return product.text ? (product.text + ' (ID: ' + product.id + ')') : '';
+            },
+            width: '50%', // Changed to 50% width             
+    		dropdownAutoWidth: false,
+            dropdownCssClass: 'select2-container'
+        }).on('select2:open', function() {
+    // Adjust dropdown width when opened
+    //$('.select2-container--open .select2-dropdown').css('width', '50%');
 });
+
+        // Optional: Adjust width on resize
+        $(window).on('resize', function() {
+            $productSelect.select2('width', '50%');
+        });
+    });
+
+})(jQuery);
