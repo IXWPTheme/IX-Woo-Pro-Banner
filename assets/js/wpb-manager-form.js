@@ -37,7 +37,7 @@ jQuery(document).ready(function($) {
     });
 
     // Handle form submission
-    $('#ix-wpb-manager-form').on('submit', function(e) {
+   $('#ix-wpb-manager-form').on('submit', function(e) {
         e.preventDefault();
         
         var $form = $(this);
@@ -48,7 +48,7 @@ jQuery(document).ready(function($) {
         $submit.prop('disabled', true).text(ix_wpb_manager_form.i18n.saving);
         
         $.ajax({
-            url: ix_wpb_manager_form.ajax_url,
+            url: ix_wpb_manager_form.ajaxurl,
             type: 'POST',
             data: {
                 action: 'ix_wpb_save_manager_settings',
@@ -57,11 +57,12 @@ jQuery(document).ready(function($) {
                 image_size: $form.find('#ix-wpb-image-size').val(),
                 selected_products: $form.find('#ix-wpb-selected-products').val() || []
             },
+            dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    $message.addClass('success').text(response.data);
+                    $message.addClass('success').text(response.data.message);
                 } else {
-                    $message.addClass('error').text(response.data);
+                    $message.addClass('error').text(response.data.message);
                 }
             },
             error: function(xhr, status, error) {
