@@ -1,0 +1,154 @@
+/* IX Woo Pro Banner Manager Form Styles */
+.ix-wpb-manager-form {
+    max-width: 800px;
+    margin: 20px 0;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.ix-wpb-error {
+    padding: 15px;
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3232;
+    margin: 20px 0;
+}
+
+.ix-wpb-form-section {
+    padding: 20px;
+    border-bottom: 1px solid #dcdcde;
+}
+
+.ix-wpb-form-section:last-child {
+    border-bottom: none;
+}
+
+.ix-wpb-form-section h3 {
+    margin: 0 0 20px 0;
+    font-size: 14px;
+    color: #1d2327;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ix-wpb-form-row {
+    margin-bottom: 20px;
+}
+
+.ix-wpb-form-row:last-child {
+    margin-bottom: 0;
+}
+
+.ix-wpb-manager-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.ix-wpb-manager-form select,
+.ix-wpb-manager-form .ix-wpb-product-select {
+    width: 100%;
+    /*padding: 8px;*/
+    border: 1px solid #8c8f94;
+    border-radius: 3px;
+    background-color: #fff;
+    color: #2c3338;
+    min-height: 36px;
+}
+
+.ix-wpb-manager-form select:focus,
+.ix-wpb-manager-form .ix-wpb-product-select:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
+}
+
+/* Select2 styling for product selector */
+.ix-wpb-product-select.select2-container .select2-selection--multiple {
+    min-height: 36px;
+    border: 1px solid #8c8f94;
+    border-radius: 3px;
+}
+
+.ix-wpb-product-select.select2-container .select2-selection__choice {
+    background: #f0f0f1;
+    border: 1px solid #c3c4c7;
+    border-radius: 2px;
+    padding: 2px 6px;
+}
+
+.ix-wpb-product-select.select2-container .select2-selection__choice__remove {
+    color: #a00;
+    margin-right: 4px;
+}
+
+.ix-wpb-product-select.select2-container .select2-search__field {
+    margin-top: 5px;
+    min-height: 26px;
+}
+
+/* Form actions section */
+.ix-wpb-form-actions {
+    padding: 20px;
+    background: #f6f7f7;
+    border-top: 1px solid #dcdcde;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ix-wpb-form-actions .button-primary {
+    background: #2271b1;
+    border-color: #2271b1;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: none;
+    padding: 6px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1.4;
+    height: auto;
+}
+
+.ix-wpb-form-actions .button-primary:hover {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+}
+
+.ix-wpb-form-message {
+    color: #2271b1;
+    font-weight: 600;
+    padding: 5px 10px;
+}
+
+.ix-wpb-form-message.success {
+    color: #155724;
+    background: #d4edda;
+}
+
+.ix-wpb-form-message.error {
+    color: #721c24;
+    background: #f8d7da;
+}
+
+/* Responsive adjustments */
+@media screen and (min-width: 783px) {
+    .ix-wpb-form-row {
+        display: flex;
+        align-items: center;
+    }
+    
+    .ix-wpb-manager-form label {
+        flex: 0 0 200px;
+        margin-bottom: 0;
+    }
+    
+    .ix-wpb-manager-form select,
+    .ix-wpb-manager-form .ix-wpb-product-select {
+        flex: 1;
+    }
+}
