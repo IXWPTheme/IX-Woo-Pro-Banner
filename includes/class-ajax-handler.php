@@ -47,6 +47,7 @@ class IX_WPB_Ajax_Handler {
         // Manager settings
         add_action( 'wp_ajax_ix_wpb_save_manager_settings', [ $this, 'handle_save_manager_settings' ] );
         add_action( 'wp_ajax_ix_wpb_search_manager_products', [ $this, 'handle_manager_product_search' ] );
+		add_action( 'wp_ajax_nopriv_ix_wpb_save_manager_settings', [ $this, 'handle_nopriv_access' ] );
     }
 
     /**
@@ -134,6 +135,7 @@ class IX_WPB_Ajax_Handler {
      * Handle saving manager settings.
      */
     public function handle_save_manager_settings() {
+		
         check_ajax_referer( 'ix_wpb_manager_form_nonce', 'nonce' );
 
         if ( ! current_user_can( 'edit_products' ) ) {
